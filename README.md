@@ -1,4 +1,5 @@
 # Spam/Ham Classification System
+
 ## Монгол хэлний сэтгэгдэл ангилагч
 
 Энэхүү систем нь Facebook-ийн монгол хэлний сэтгэгдлүүдийг spam эсвэл ham (хэвийн) гэж ангилдаг.
@@ -33,11 +34,13 @@ python main.py
 ## Боломжит функцүүд
 
 ### 1. Өгөгдөл ачаалах
+
 - Google Sheets URL-ээс (default)
 - CSV файлаас
 - XLSX файлаас
 
 ### 2. Naive Bayes модель сургах
+
 - **Текстийн эх үүсвэр сонгох**:
   - Raw comment (Анхны сэтгэгдэл)
   - Transliterated comment (Цэвэрлэсэн сэтгэгдэл)
@@ -47,20 +50,24 @@ python main.py
 - Train/test хуваалт тохируулах
 
 ### 3. Decision Tree модель сургах
+
 - Maximum depth тохируулах
 - Train/test хуваалт тохируулах
 - Tree бүтцийг харах
 
 ### 4. Моделийг үнэлэх
+
 - Accuracy
 - Confusion Matrix
 - Precision, Recall, F1-Score
 
 ### 5. Өөрийн сэтгэгдэл ангилуулах
+
 - **Naive Bayes**: Текст оруулаад шууд ангилах
 - **Decision Tree**: Шинжүүд (features) оруулж ангилах
 
 ### 6. Визуализаци харах
+
 - Сэтгэгдлийн урт тархалт
 - Emoji тоо тархалт
 - Үсгийн төрөл (Кирилл/Латин/Бусад)
@@ -71,12 +78,14 @@ python main.py
 ## Жишээ
 
 ### Naive Bayes ашиглах:
+
 1. Өгөгдөл ачаалах (Сонголт 1)
 2. Naive Bayes сургах (Сонголт 2)
 3. Моделийг үнэлэх (Сонголт 4)
 4. Өөрийн сэтгэгдэл ангилуулах (Сонголт 5)
 
 ### Decision Tree ашиглах:
+
 1. Өгөгдөл ачаалах (Сонголт 1)
 2. Decision Tree сургах (Сонголт 3)
 3. Моделийг үнэлэх (Сонголт 4)
@@ -85,10 +94,12 @@ python main.py
 ## Өгөгдлийн формат
 
 ### Naive Bayes-д шаардлагатай:
+
 - `label`: spam эсвэл ham
 - `Raw comment`: Сэтгэгдлийн текст
 
 ### Decision Tree-д шаардлагатай:
+
 - `label`: spam эсвэл ham
 - Binary features:
   - Зураг агуулсан эсэх
@@ -107,15 +118,22 @@ python main.py
 ## Техникийн дэлгэрэнгүй
 
 ### Naive Bayes Algorithm
+
 - Multinomial Naive Bayes
 - N-gram tokenization (unigram, bigram, trigram)
 - Laplace smoothing
 
 ### Decision Tree Algorithm
+
 - ID3 algorithm
 - Information Gain / Entropy
 - Тоон болон ангилалтай шинжүүдийг дэмждэг
 
 ## Зохиогч
 
-МУИС-МТЭС оюутан
+МУИС-МТЭС Магадлал Статистик хичээлийн 6-р багийн оюутан:
+
+- М.Ариунзаяа
+- С.Буян-Эрдэнэ
+- Б.Эрдэнэ-Очир
+- О.Нямбаяр
