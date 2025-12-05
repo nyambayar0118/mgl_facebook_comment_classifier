@@ -100,6 +100,24 @@ class SpamClassifierApp:
         print("\n🤖 NAIVE BAYES МОДЕЛЬ СУРГАХ")
         print("-" * 70)
         
+        # Текстийн эх үүсвэр сонгох
+        print("\nТекстийн эх үүсвэр сонгох:")
+        print("  1. Raw comment (Анхны сэтгэгдэл)")
+        print("  2. Transliterated comment (Цэвэрлэсэн сэтгэгдэл)")
+        print("  3. Both (Хоёулаа нэгтгэсэн)")
+        
+        text_choice = input("\nСонголт [1-3] [1]: ").strip()
+        
+        if text_choice == '2':
+            text_source = 'transliterated'
+            print("✓ Цэвэрлэсэн сэтгэгдэл ашиглана")
+        elif text_choice == '3':
+            text_source = 'both'
+            print("✓ Хоёр баганыг нэгтгэж ашиглана")
+        else:
+            text_source = 'raw'
+            print("✓ Анхны сэтгэгдэл ашиглана")
+        
         # Параметрүүд асуух
         print("\nПараметрүүд:")
         alpha = input("  Laplace smoothing α [1.0]: ").strip()
@@ -114,10 +132,11 @@ class SpamClassifierApp:
         
         try:
             print("\n⏳ Моделийг сургаж байна...")
-            X, y = self.data_loader.prepare_for_naive_bayes()
+            X, y = self.data_loader.prepare_for_naive_bayes(text_source=text_source)
             self.evaluator.train_naive_bayes(X, y, alpha=alpha, ngram_range=ngram_range, test_size=test_size)
             
             print("\n✅ Модель амжилттай сургагдлаа!")
+            print(f"   Текстийн эх үүсвэр: {text_source}")
             print(f"   Vocabulary хэмжээ: {len(self.evaluator.model.vocabulary_)}")
             print(f"   Train set: {len(self.evaluator.X_train)} мөр")
             print(f"   Test set: {len(self.evaluator.X_test)} мөр")

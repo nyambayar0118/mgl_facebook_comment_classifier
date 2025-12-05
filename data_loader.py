@@ -47,15 +47,42 @@ class DataLoader:
         
         return self.df_raw
     
-    def prepare_for_naive_bayes(self):
-        """Naive Bayes-д зориулж өгөгдөл бэлдэх"""
+    def prepare_for_naive_bayes(self, text_source='raw'):
+        """
+        Naive Bayes-д зориулж өгөгдөл бэлдэх
+        
+        text_source: 'raw', 'transliterated', эсвэл 'both'
+        """
         if self.df_raw is None:
             self.load_data()
         
-        df_clf = self.df_raw[['label', 'Raw comment']].dropna()
-        df_clf = df_clf.rename(columns={'Raw comment': 'raw_comment'})
+        df_clf = self.df_raw[['label']].copy()
         
-        return df_clf['raw_comment'], df_clf['label']
+        if text_source == 'raw':
+            # Зөвхөн Raw comment
+            df_clf['text'] = self.df_raw['Raw comment']
+        elif text_source == 'transliterated':
+            # Зөвхөн Цэвэрлэсэн сэтгэгдэл
+            if 'Цэвэрлэсэн сэтгэгдэл' in self.df_raw.columns:
+                df_clf['text'] = self.df_raw['Цэвэрлэсэн сэтгэгдэл']
+            else:
+                print("⚠️  'Цэвэрлэсэн сэтгэгдэл' багана олдсонгүй, Raw comment ашиглана.")
+                df_clf['text'] = self.df_raw['Raw comment']
+        elif text_source == 'both':
+            # Хоёулаа нэгтгэх
+            raw = self.df_raw['Raw comment'].fillna('')
+            if 'Цэвэрлэсэн сэтгэгдэл' in self.df_raw.columns:
+                trans = self.df_raw['Цэвэрлэсэн сэтгэгдэл'].fillna('')
+                df_clf['text'] = raw + ' ' + trans
+            else:
+                print("⚠️  'Цэвэрлэсэн сэтгэгдэл' багана олдсонгүй, Raw comment ашиглана.")
+                df_clf['text'] = raw
+        else:
+            raise ValueError(f"Танихгүй text_source: {text_source}")
+        
+        df_clf = df_clf.dropna(subset=['text', 'label'])
+        
+        return df_clf['text'], df_clf['label']
     
     def prepare_for_decision_tree(self):
         """Decision Tree-д зориулж өгөгдөл бэлдэх"""

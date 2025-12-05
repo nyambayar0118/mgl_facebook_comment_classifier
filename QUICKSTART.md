@@ -24,6 +24,7 @@ python main.py
    - Google Sheets URL сонгох (default)
    
 2. '2' дарж Naive Bayes сургах
+   - Текстийн эх үүсвэр: 1 (Raw comment)
    - Alpha [1.0]: Enter дарах (default)
    - N-gram [2]: Enter дарах (unigram+bigram)
    - Test size [0.3]: Enter дарах

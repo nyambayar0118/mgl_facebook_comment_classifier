@@ -38,6 +38,10 @@ python main.py
 - XLSX файлаас
 
 ### 2. Naive Bayes модель сургах
+- **Текстийн эх үүсвэр сонгох**:
+  - Raw comment (Анхны сэтгэгдэл)
+  - Transliterated comment (Цэвэрлэсэн сэтгэгдэл)
+  - Both (Хоёулаа нэгтгэсэн)
 - Laplace smoothing (α) параметр тохируулах
 - N-gram төрөл сонгох (unigram, bigram, trigram)
 - Train/test хуваалт тохируулах
