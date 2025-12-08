@@ -1,0 +1,602 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.8.26">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Buyadaa">
+<meta name="dcterms.date" content="2025-01-01">
+
+<title>Монгол Facebook-ийн Spam Сэтгэгдэл Илрүүлэх Машин Сургалтын Төсөл</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+</style>
+
+
+<script src="tailan_files/libs/clipboard/clipboard.min.js"></script>
+<script src="tailan_files/libs/quarto-html/quarto.js" type="module"></script>
+<script src="tailan_files/libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="tailan_files/libs/quarto-html/axe/axe-check.js" type="module"></script>
+<script src="tailan_files/libs/quarto-html/popper.min.js"></script>
+<script src="tailan_files/libs/quarto-html/tippy.umd.min.js"></script>
+<script src="tailan_files/libs/quarto-html/anchor.min.js"></script>
+<link href="tailan_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="tailan_files/libs/quarto-html/quarto-syntax-highlighting-587c61ba64f3a5504c4d52d930310e48.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="tailan_files/libs/bootstrap/bootstrap.min.js"></script>
+<link href="tailan_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="tailan_files/libs/bootstrap/bootstrap-9e3ffae467580fdb927a41352e75a2e0.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+
+
+</head>
+
+<body class="quarto-light">
+
+<div id="quarto-content" class="page-columns page-rows-contents page-layout-article">
+<div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+  <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#оршил" id="toc-оршил" class="nav-link active" data-scroll-target="#оршил">Оршил</a></li>
+  <li><a href="#өгөгдөл-цуглуулалт" id="toc-өгөгдөл-цуглуулалт" class="nav-link" data-scroll-target="#өгөгдөл-цуглуулалт">1. Өгөгдөл цуглуулалт</a></li>
+  <li><a href="#өгөгдөл-унших-ба-анхан-шатны-боловсруулалт" id="toc-өгөгдөл-унших-ба-анхан-шатны-боловсруулалт" class="nav-link" data-scroll-target="#өгөгдөл-унших-ба-анхан-шатны-боловсруулалт">2. Өгөгдөл унших ба анхан шатны боловсруулалт</a></li>
+  <li><a href="#өгөгдөл-цэвэрлэх" id="toc-өгөгдөл-цэвэрлэх" class="nav-link" data-scroll-target="#өгөгдөл-цэвэрлэх">3. Өгөгдөл цэвэрлэх</a>
+  <ul class="collapse">
+  <li><a href="#stopwords-устгах" id="toc-stopwords-устгах" class="nav-link" data-scroll-target="#stopwords-устгах">3.1 Stopwords устгах</a></li>
+  <li><a href="#tokenization" id="toc-tokenization" class="nav-link" data-scroll-target="#tokenization">3.2 Tokenization</a></li>
+  <li><a href="#стемминглемматизаци" id="toc-стемминглемматизаци" class="nav-link" data-scroll-target="#стемминглемматизаци">3.3 Стемминг/Лемматизаци</a></li>
+  </ul></li>
+  <li><a href="#өгөгдөл-хуваах" id="toc-өгөгдөл-хуваах" class="nav-link" data-scroll-target="#өгөгдөл-хуваах">4. Өгөгдөл хуваах</a></li>
+  <li><a href="#өгөгдлийн-тархалтын-дүрслэл" id="toc-өгөгдлийн-тархалтын-дүрслэл" class="nav-link" data-scroll-target="#өгөгдлийн-тархалтын-дүрслэл">5. Өгөгдлийн тархалтын дүрслэл</a></li>
+  <li><a href="#машин-сургалтын-загварууд" id="toc-машин-сургалтын-загварууд" class="nav-link" data-scroll-target="#машин-сургалтын-загварууд">6. Машин сургалтын загварууд</a>
+  <ul class="collapse">
+  <li><a href="#naive-bayes-unigram" id="toc-naive-bayes-unigram" class="nav-link" data-scroll-target="#naive-bayes-unigram">6.1 Naive Bayes (Unigram)</a></li>
+  <li><a href="#naive-bayes-bigram" id="toc-naive-bayes-bigram" class="nav-link" data-scroll-target="#naive-bayes-bigram">6.2 Naive Bayes (Bigram)</a></li>
+  <li><a href="#decision-tree-classifier" id="toc-decision-tree-classifier" class="nav-link" data-scroll-target="#decision-tree-classifier">6.3 Decision Tree Classifier</a></li>
+  <li><a href="#unified-model" id="toc-unified-model" class="nav-link" data-scroll-target="#unified-model">6.4 Unified Model</a></li>
+  </ul></li>
+  <li><a href="#үр-дүнгийн-дүн-шинжилгээ" id="toc-үр-дүнгийн-дүн-шинжилгээ" class="nav-link" data-scroll-target="#үр-дүнгийн-дүн-шинжилгээ">7. Үр дүнгийн дүн шинжилгээ</a></li>
+  <li><a href="#дүгнэлт" id="toc-дүгнэлт" class="nav-link" data-scroll-target="#дүгнэлт">8. Дүгнэлт</a></li>
+  </ul>
+</nav>
+</div>
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Монгол Facebook-ийн Spam Сэтгэгдэл Илрүүлэх Машин Сургалтын Төсөл</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>Buyadaa </p>
+          </div>
+  </div>
+    
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">January 1, 2025</p>
+    </div>
+  </div>
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<section id="оршил" class="level1">
+<h1>Оршил</h1>
+<p>Интернэт орчинд төөрөгдүүлсэн, сурталчилгааны зорилготой болон хуурамч мэдээлэл агуулсан <strong>spam сэтгэгдлүүд</strong> нь олон нийтийн мэдээллийн хэрэгслүүдийн аюулгүй байдлыг алдагдуулах томоохон асуудлын нэг юм. Тухайлбал, Facebook орчинд хийгддэг автомат сэтгэгдлийн спам нь хэрэглэгчийн туршлагыг муутгахын зэрэгцээ хуурамч зар сурталчилгааг түгээх, залилангийн эрсдэлийг нэмэгдүүлдэг. Тиймээс Facebook-ийн спам сэтгэгдлийг машин сургалтын аргаар илрүүлэх нь ач холбогдол өндөртэй бөгөөд энэ төслийн үндсэн зорилго болно.</p>
+<p>Энэхүү тайланд Монгол хэл дээр бичигдсэн Facebook сэтгэгдлүүдийг үндэслэн <strong>spam эсэхийг тодорхойлох машин сургалтын сайн чанартай загвар</strong> боловсруулах үе шат, хэрэглэсэн өгөгдөл, хийсэн цэвэрлэгээ, шинжилгээ болон сургасан дөрвөн төрөлт загварын тайлбар багтана.</p>
+</section>
+<section id="өгөгдөл-цуглуулалт" class="level1">
+<h1>1. Өгөгдөл цуглуулалт</h1>
+<p>Төслийн үр дүнгээс хамааран хамгийн чухал суурь алхам бол өгөгдлөө зөв, хангалттай хэмжээгээр бүрдүүлэх юм. Энэхүү төсөлд Facebook-ийн олон нийтийн хуудас, нийтлэлүүдийн сэтгэгдлүүдийг гараар болон автомат хэрэгслүүдээр дамжуулан татаж авсан. Өгөгдөл нь хоёр ангилалтай:</p>
+<ul>
+<li><strong>Spam сэтгэгдэл</strong> — сурталчилгааны, холбоосоор хандуулах, санхүүгийн залилан агуулсан, олон удаа давтагдсан автомат сэтгэгдлүүд.</li>
+<li><strong>Бутархай / энгийн сэтгэгдэл</strong> — хэвийн хэрэглэгчийн бичсэн, сэдвийн хүрээнд мэдээлэл агуулсан сэтгэгдлүүд.</li>
+</ul>
+<p>Цуглуулсан өгөгдөлд: - сэтгэгдлийн текст, - бичсэн огноо, - хэрэглэгчийн ID (зөвхөн ялгалтын зорилгоор, загварт ашиглаагүй), - spam эсэхийг илэрхийлэх <code>label</code> гэх мэт талбарууд багтсан.</p>
+</section>
+<section id="өгөгдөл-унших-ба-анхан-шатны-боловсруулалт" class="level1">
+<h1>2. Өгөгдөл унших ба анхан шатны боловсруулалт</h1>
+<p>Татаж авсан өгөгдлийг төслийн орчинд импортлон унших үед сэтгэгдлүүдийн бүтэц, текстийн чанарт тулгуурлан дараах асуудлууд илэрсэн:</p>
+<ul>
+<li>давхардсан сэтгэгдэл олон байсан,</li>
+<li>URL, emoji, тусгай тэмдэгтүүд хэт их агуулагдсан,</li>
+<li>зарим урт сэтгэгдэл нь автоматаар нэг мөрт багтсан,</li>
+<li>хоосон зай болон формат алдагдсан хэсгүүдтэй байсан.</li>
+</ul>
+<p>Анхан шатны боловсруулалтад: - давхардлыг устгах, - эмоджи болон илүү тэмдэгтүүдийг арилгах, - текстийг жижиг үсэг рүү хөрвүүлэх, - хоосон мөр, утгагүй тэмдэгтүүдийг устгах зэрэг үйлдлүүд хийгдсэн.</p>
+</section>
+<section id="өгөгдөл-цэвэрлэх" class="level1">
+<h1>3. Өгөгдөл цэвэрлэх</h1>
+<p>Спам илрүүлэх зэрэг текстэн өгөгдлийн машин сургалтын ажилд өгөгдөл цэвэрлэх нь маш чухал. Энэ төсөлд дараах техникүүд ашиглав:</p>
+<section id="stopwords-устгах" class="level2">
+<h2 class="anchored" data-anchor-id="stopwords-устгах">3.1 Stopwords устгах</h2>
+<p>Монгол хэлний <code>байна</code>, <code>бол</code>, <code>гээд</code>, <code>юм</code> зэрэг утга агуулаагүй ч давтамж өндөр үгс нь загварт сөргөөр нөлөөлдөг тул stopword жагсаалтыг ашиглан устгав.</p>
+</section>
+<section id="tokenization" class="level2">
+<h2 class="anchored" data-anchor-id="tokenization">3.2 Tokenization</h2>
+<p>Сэтгэгдлүүдийг: - <strong>Unigram</strong> буюу нэг нэгээр нь, - <strong>Bigram</strong> буюу хоёр үгийн дараалал болгон хуваах токенчлолын техникийг ашигласан.</p>
+</section>
+<section id="стемминглемматизаци" class="level2">
+<h2 class="anchored" data-anchor-id="стемминглемматизаци">3.3 Стемминг/Лемматизаци</h2>
+<p>Монгол хэлний стемминг төдийлөн төгөлдөржөөгүй тул төслийн хүрээнд үндсэндээ үеэр таслах, үгийн үндэс хэлбэрийг үлдээх хөнгөн цэвэрлэгээ хийсэн.</p>
+</section>
+</section>
+<section id="өгөгдөл-хуваах" class="level1">
+<h1>4. Өгөгдөл хуваах</h1>
+<p>Загварын гүйцэтгэлийг үнэлэхийн тулд өгөгдлийг: - <strong>Train set — 80%</strong>, - <strong>Test set — 20%</strong> хувиар хуваав. Хуваахдаа ангиллын тэнцвэрт байдлыг хадгалахын тулд <strong>stratified split</strong> ашиглав.</p>
+</section>
+<section id="өгөгдлийн-тархалтын-дүрслэл" class="level1">
+<h1>5. Өгөгдлийн тархалтын дүрслэл</h1>
+<p>Тархалтын графикууд нь spam болон normal сэтгэгдлүүдийн үгийн давтамж, урт, хамгийн түгээмэл үгсийн ялгааг ажиглахад тусалсан. Үүнд: - үгийн урт, - нийт token-ийн тоо, - spam ангилалд хамгийн их давтамжтай үгс, - normal ангилалд хамгийн их давтамжтай үгсмэт хэмжигдэхүүнүүд багтсан.</p>
+<p>Дүрслэлүүдээс харахад spam сэтгэгдэлд: - мөнгө, зар, борлуулалтын шинжтэй үгс давамгайлсан, - URL болон emoji илүү байсан, - үгийн давтамж жигд бус хуваарилалттай гарсан.</p>
+</section>
+<section id="машин-сургалтын-загварууд" class="level1">
+<h1>6. Машин сургалтын загварууд</h1>
+<p>Энэхүү төсөлд дөрвөн загвар хэрэглэв. Текстэн өгөгдлийн онцлогоос хамааран Naive Bayes болон Decision Tree алгоритмууд тохиромжтой гэж үзсэн.</p>
+<section id="naive-bayes-unigram" class="level2">
+<h2 class="anchored" data-anchor-id="naive-bayes-unigram">6.1 Naive Bayes (Unigram)</h2>
+<p>Unigram Naive Bayes нь сэтгэгдлийг тус тусын үгсэд салгасан дараа үг бүрийн нөхцөлт магадлал дээр үндэслэн ангилдаг. Давуу тал нь: - хурдан, - өгөгдөл багатай үед сайн ажилладаг, - текстанд үр дүнтэй.</p>
+<p>Туршилтын үр дүнгээс харахад Unigram загвар нь бусадтай харьцуулахад илүү тогтвортой, baseline амжилттай гарсан.</p>
+</section>
+<section id="naive-bayes-bigram" class="level2">
+<h2 class="anchored" data-anchor-id="naive-bayes-bigram">6.2 Naive Bayes (Bigram)</h2>
+<p>Bigram Naive Bayes нь хоёр үгийн дараалал ашигладаг тул илүү нарийн контекст ойлгодог. Жишээлбэл: - “үнэгүй ав” → spam давтамж өндөр - “сайн байна” → normal сэтгэгдэлд түгээмэл</p>
+<p>Bigram нь илүү сайн контекст барьдаг ч үгийн сан хэт өсөх тул өгөгдөл цөөтэй үед overfitting үүсэх магадлалтай. Туршилтаар харьцангуй сайн гарсан ч Unigram-аас хэт давахгүй байв.</p>
+</section>
+<section id="decision-tree-classifier" class="level2">
+<h2 class="anchored" data-anchor-id="decision-tree-classifier">6.3 Decision Tree Classifier</h2>
+<p>Decision Tree нь багана бүрээр нөхцөл шалган мод хэлбэртэй шийдвэр гаргадаг. Давуу тал: - тайлбарлахад хялбар, - дүрэм суурьтай, - олон төрлийн feature-т сайн.</p>
+<p>Гэхдээ текстэн материалд dimensionality маш өндөр байдаг тул мод хэт томорч, гүйцэтгэл зарим үед буурсан.</p>
+</section>
+<section id="unified-model" class="level2">
+<h2 class="anchored" data-anchor-id="unified-model">6.4 Unified Model</h2>
+<p>Unified model нь дээрх гурван загварыг нэгтгэн ensemble хэлбэрээр дундажлах/жигнэх аргыг ашигласан. Энэхүү загварын зорилго: - загваруудын сул талыг нөхөх, - илүү тогтвортой, дундаж өндөр нарийвчлалтай систем бий болгох.</p>
+<p>Үр дүнгээрээ unified model хамгийн өндөр F1-score үзүүлсэн.</p>
+</section>
+</section>
+<section id="үр-дүнгийн-дүн-шинжилгээ" class="level1">
+<h1>7. Үр дүнгийн дүн шинжилгээ</h1>
+<p>Загваруудын гүйцэтгэлийг дараах хэмжигдэхүүнүүдээр хэмжсэн: - Accuracy - Precision - Recall - F1-score</p>
+<p>Ерөнхий ажиглалтаас харахад: - Unigram NB → өндөр recall - Bigram NB → текстийн утга барих чадвар илүү - Decision Tree → тайлбарлахад сайн ч dimensionality-н улмаас харьцангуй сул - Unified Model → хамгийн тэнцвэртэй, өндөр гүйцэтгэлтэй</p>
+</section>
+<section id="дүгнэлт" class="level1">
+<h1>8. Дүгнэлт</h1>
+<p>Энэхүү төслийн хүрээнд Монгол хэл дээрх Facebook сэтгэгдлүүдийн spam илрүүлэх системийг боловсруулж, өгөгдөл цуглуулах, боловсруулалт хийх, шинжилгээ хийх, хэд хэдэн машин сургалтын загвар турших ажлуудыг амжилттай хийж гүйцэтгэлээ.</p>
+<p>Unified Model нь хамгийн сайн гүйцэтгэлтэй гарсан бөгөөд цаашид: - илүү том өгөгдлийн сан бүрдүүлэх, - deep learning (LSTM, BERT) турших, - real-time spam detection системд холбох боломжтой юм.</p>
+<hr>
+<p>Энэхүү тайлан нь кодын хэсгүүдийг оруулахгүй зөвхөн судалгааны үндсэн агуулгыг багтаасан болно.</p>
+</section>
+
+</main>
+<!-- /main column -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+</div> <!-- /content -->
+
+
+
+
+</body></html>
